@@ -12,6 +12,7 @@ import com.gisapp.springboot.backend.apirest.models.dao.IClienteDao;
 import com.gisapp.springboot.backend.apirest.models.dao.IGeometriesDAO;
 import com.gisapp.springboot.backend.apirest.models.entity.GeometryEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.NonGeometryEntity;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 
 @Service
@@ -32,6 +33,7 @@ public class ClienteServiceImpl implements IClienteService {
 	@Override
 	@Transactional
 	public void save(GeometryEntity geometry) {
+
 		clienteDao.save(geometry);
 	}
 
@@ -56,7 +58,5 @@ public class ClienteServiceImpl implements IClienteService {
 		List<GeometryEntity> gE = geometriesDAO.findPointsByUserId(userId);
 		return GeometryEntityConverter.convertToNonGeometryEntity(gE);
 	}
-
-
 
 }

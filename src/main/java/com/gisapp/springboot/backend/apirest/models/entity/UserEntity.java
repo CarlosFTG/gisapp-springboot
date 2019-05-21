@@ -1,11 +1,17 @@
 package com.gisapp.springboot.backend.apirest.models.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -21,15 +27,34 @@ public class UserEntity implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@Column(name = "user_name")
 	private String userName;
 	
+	@Column(name = "surname")
 	private String surname;
 	
+	@Column(name = "email")
 	private String email;
 	
+	@Column(name = "user_password")
 	private String userPassword;
 	
+	@Column(name = "app_admin")
 	private boolean appAdmin;
+	
+	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+	@JoinColumn(name="user_id")
+	private List<GeometryEntity> geometriesList;
+	
+	
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public String getUserName() {
 		return userName;
@@ -69,6 +94,14 @@ public class UserEntity implements Serializable {
 
 	public void setAppAdmin(boolean appAdmin) {
 		this.appAdmin = appAdmin;
+	}
+
+	public List<GeometryEntity> getGeometriesList() {
+		return geometriesList;
+	}
+
+	public void setGeometriesList(List<GeometryEntity> geometriesList) {
+		this.geometriesList = geometriesList;
 	}
 	
 	

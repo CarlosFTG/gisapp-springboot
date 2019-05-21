@@ -1,6 +1,10 @@
 package com.gisapp.springboot.backend.apirest.models.entity;
 
+import java.util.List;
+
 import javax.persistence.Column;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 /**
  * Class to convert the json that comes from the front-end to the GeometryEntity

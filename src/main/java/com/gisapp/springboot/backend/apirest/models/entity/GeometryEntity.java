@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -24,8 +26,9 @@ public class GeometryEntity implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+
 	@Column(name = "user_id")
-	private String userId;
+	private Long userId;
 
 	@Column(name = "point_name")
 	private String pointName;
@@ -41,11 +44,11 @@ public class GeometryEntity implements Serializable {
 		this.id = id;
 	}
 
-	public String getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 
@@ -66,4 +69,5 @@ public class GeometryEntity implements Serializable {
 	}
 
 	private static final long serialVersionUID = 1L;
+
 }
