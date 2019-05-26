@@ -1,6 +1,5 @@
 package com.gisapp.springboot.backend.apirest.models.services;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,18 +7,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gisapp.springboot.backend.apirest.converter.GeometryEntityConverter;
-import com.gisapp.springboot.backend.apirest.models.dao.IClienteDao;
 import com.gisapp.springboot.backend.apirest.models.dao.IGeometriesDAO;
+import com.gisapp.springboot.backend.apirest.models.dao.IGeometriesGenericDao;
 import com.gisapp.springboot.backend.apirest.models.entity.GeometryEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.NonGeometryEntity;
-import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 
 @Service
-public class ClienteServiceImpl implements IClienteService {
+public class GeometryServiceImpl implements IGeometryService {
 
 	@Autowired
-	private IClienteDao clienteDao;
+	private IGeometriesGenericDao genericDao;
 
 	@Autowired
 	private IGeometriesDAO geometriesDAO;
@@ -27,20 +25,22 @@ public class ClienteServiceImpl implements IClienteService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<GeometryEntity> findAll() {
-		return (List<GeometryEntity>) clienteDao.findAll();
+		return (List<GeometryEntity>) genericDao.findAll();
 	}
 
 	@Override
 	@Transactional
 	public void save(GeometryEntity geometry) {
 
-		clienteDao.save(geometry);
+		genericDao.save(geometry);
 	}
+	
+
 
 	@Override
 	@Transactional(readOnly = true)
 	public NonGeometryEntity findById(Long id) throws ParseException {
-		GeometryEntity gE = clienteDao.findById(id).orElse(null);
+		GeometryEntity gE = genericDao.findById(id).orElse(null);
 		return null;
 
 	}
@@ -48,7 +48,7 @@ public class ClienteServiceImpl implements IClienteService {
 	@Override
 	@Transactional
 	public void delete(GeometryEntity cliente) {
-		clienteDao.delete(cliente);
+		genericDao.delete(cliente);
 
 	}
 

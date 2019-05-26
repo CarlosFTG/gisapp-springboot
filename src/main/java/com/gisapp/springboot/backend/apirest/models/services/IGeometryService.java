@@ -6,7 +6,7 @@ import com.gisapp.springboot.backend.apirest.models.entity.GeometryEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.NonGeometryEntity;
 import com.vividsolutions.jts.io.ParseException;
 
-public interface IClienteService {
+public interface IGeometryService {
 	
 	public List<GeometryEntity> findAll();
 	
