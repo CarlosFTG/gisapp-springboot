@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -18,19 +19,29 @@ public class UserDAO implements IUserDAO {
 	@PersistenceContext
 	private EntityManager em;
 
+	/**
+	 * {{inherit}}
+	 */
 	@Override
 	public Object login(UserEntity user) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("SELECT user FROM UserEntity user " + "WHERE user_name in (:userName) ");
+		sb.append("SELECT user FROM UserEntity user " + "WHERE email in (:email) ");
 
 		Query q = em.createQuery(sb.toString());
 
-		q.setParameter("userName", user.getUserName());
+		q.setParameter("email", user.getEmail());
+		
+		UserEntity userFound = new UserEntity();
 
-		UserEntity userFound = (UserEntity) q.getSingleResult();
-
+		try {
+			 userFound = (UserEntity) q.getSingleResult();
+		}catch(NoResultException nre){
+		}
 		return userFound;
+		
 	}
+
+	
 	
 	
 
