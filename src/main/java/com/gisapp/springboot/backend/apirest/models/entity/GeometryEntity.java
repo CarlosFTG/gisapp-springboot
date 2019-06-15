@@ -1,25 +1,18 @@
 package com.gisapp.springboot.backend.apirest.models.entity;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
-import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Point;
 
 @Entity
-@Table(name = "geometries")
+@Table(name = "points")
 public class GeometryEntity implements Serializable {
 
 	@Id
@@ -29,12 +22,15 @@ public class GeometryEntity implements Serializable {
 
 	@Column(name = "user_id")
 	private Long userId;
+	
+	@Column(name = "user_email")
+	private String userEmail;
 
 	@Column(name = "point_name")
 	private String pointName;
 
-	@Column(name = "geom")
-	private Geometry geom;
+	@Column(name = "coordinates")
+	private Point coordinates;
 
 	public Long getId() {
 		return id;
@@ -60,12 +56,20 @@ public class GeometryEntity implements Serializable {
 		this.pointName = pointName;
 	}
 
-	public Geometry getGeom() {
-		return geom;
+	public Point getGeom() {
+		return coordinates;
 	}
 
-	public void setGeom(Geometry geom) {
-		this.geom = geom;
+	public void setGeom(Point geom) {
+		this.coordinates = geom;
+	}
+
+	public String getUserEmail() {
+		return userEmail;
+	}
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
 	}
 
 	private static final long serialVersionUID = 1L;

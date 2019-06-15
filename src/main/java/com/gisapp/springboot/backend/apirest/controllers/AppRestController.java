@@ -3,13 +3,11 @@ package com.gisapp.springboot.backend.apirest.controllers;
 import java.util.List;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,13 +17,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gisapp.springboot.backend.apirest.converter.GeometryEntityConverter;
+import com.gisapp.springboot.backend.apirest.models.bean.UserBean;
 import com.gisapp.springboot.backend.apirest.models.entity.GeometryEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.LoginEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.NonGeometryEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.UserEntity;
-import com.gisapp.springboot.backend.apirest.models.services.IGeometryService;
-import com.gisapp.springboot.backend.apirest.models.services.IUserService;
+import com.gisapp.springboot.backend.apirest.services.IGeometryService;
+import com.gisapp.springboot.backend.apirest.services.IUserService;
 import com.vividsolutions.jts.io.ParseException;
 
 
@@ -39,30 +40,17 @@ public class AppRestController {
 
 	@Autowired
 	private IUserService userService;
+	
+	ObjectMapper mapper = new ObjectMapper();
 
 	@GetMapping("/clientes")
 	public List<GeometryEntity> index() {
 		return geometryService.findAll();
 	}
 
-	@GetMapping("geometries/findByUserId/{id}")
-	public NonGeometryEntity show(@PathVariable Long id) throws ParseException {
-		return this.geometryService.findById(id);
-	}
-
-	@PostMapping("geometries/findPointsByUserId")
-	@ResponseStatus(HttpStatus.FOUND)
-	public List<NonGeometryEntity> findPointsByUserId(@RequestBody String body) throws ParseException {
-
-		String[] bodyToSplit = body.split("=");
-		String userId = bodyToSplit[1];
-
-		return this.geometryService.findPointsByUserId(userId);
-	}
-
 	@PostMapping("/geometries/insertGeometry")
 	@ResponseStatus(HttpStatus.CREATED)
-	public GeometryEntity create(@RequestBody NonGeometryEntity geometry) throws ParseException {
+	public GeometryEntity insertPoint(@RequestBody NonGeometryEntity geometry) throws ParseException {
 
 		GeometryEntity geomToSave = new GeometryEntity();
 		this.geometryService.save(GeometryEntityConverter.convertToGeometryEntity(geometry));
@@ -76,35 +64,24 @@ public class AppRestController {
 		return null;
 	}
 
-	@DeleteMapping("/clientes/{id}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void delete(@PathVariable Long id) {
-		// GeometryEntity currentCliente = this.clienteService.findById(id);
-		// this.clienteService.delete(currentCliente);
-	}
+//	@DeleteMapping("/clientes/{id}")
+//	@ResponseStatus(HttpStatus.NO_CONTENT)
+//	public void delete(@PathVariable Long id) {
+//		// GeometryEntity currentCliente = this.clienteService.findById(id);
+//		// this.clienteService.delete(currentCliente);
+//	}
 
 	@PostMapping("/users/login")
 	@ResponseStatus(HttpStatus.FOUND)
-	public ResponseEntity<Object>  login(@RequestBody LoginEntity user) throws ParseException, JSONException {
+	public ResponseEntity<UserBean> login(@RequestBody LoginEntity user) throws ParseException, JSONException, JsonProcessingException {
 
 		 HttpHeaders headers = new HttpHeaders();
 		 headers.add("Content-Type", "application/json; charset=utf-8");
-		
-		UserEntity serviceResult = this.userService.login(user);
+		 
+		return ResponseEntity.ok(this.userService.login(user)); 
 
-		JSONObject jsonToClient = new JSONObject();
-
-		if (serviceResult.getUserName() == null && serviceResult.getEmail()==null) {
-			 jsonToClient.put("user name", null);
-			jsonToClient.put("email", null);
-		} else if(serviceResult.getUserName() != null && serviceResult.getEmail()!=null) {
-
-			jsonToClient.put("user name", serviceResult.getUserName());
-			jsonToClient.put("email", serviceResult.getEmail());
 			
 		}
-		
-		return new ResponseEntity<Object>(jsonToClient, HttpStatus.OK);	}
 
 	@PostMapping("/users/createUser")
 	@ResponseStatus(HttpStatus.CREATED)
@@ -113,4 +90,5 @@ public class AppRestController {
 		this.userService.save(user);
 		return null;
 	}
+	
 }

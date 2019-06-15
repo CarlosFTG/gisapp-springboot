@@ -42,6 +42,8 @@ public class UserEntity implements Serializable {
 	@Column(name = "app_admin")
 	private boolean appAdmin;
 	
+	private String token;
+	
 	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
 	@JoinColumn(name="user_id")
 	private List<GeometryEntity> geometriesList;
@@ -102,6 +104,14 @@ public class UserEntity implements Serializable {
 
 	public void setGeometriesList(List<GeometryEntity> geometriesList) {
 		this.geometriesList = geometriesList;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 	
 	

@@ -1,12 +1,17 @@
 package com.gisapp.springboot.backend.apirest.converter;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.gisapp.springboot.backend.apirest.models.bean.GeometryBean;
 import com.gisapp.springboot.backend.apirest.models.entity.GeometryEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.NonGeometryEntity;
-import com.gisapp.springboot.backend.apirest.models.entity.UserEntity;
-import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 
@@ -28,31 +33,38 @@ public class GeometryEntityConverter {
 		return geometryEntityList;
 	}
 
-	// public List<NonGeometryEntity>
-	// convertToNonGeometryEntityList(List<GeometryEntity> geometryList){
-	//
-	// List<NonGeometryEntity> nonGeometryEntityList = new ArrayList<>();
-	//
-	// NonGeometryEntity nonGeometryEntity = new NonGeometryEntity();
-	//
-	// for(GeometryEntity geometry:geometryList) {
-	//
-	// nonGeometryEntity =convertToNonGeometryEntity(geometry);
-	// }
-	//
-	// return null;
-	// }
+	public static List<Map<String, String>> convertToGeometryBean(List<GeometryEntity> geometryEntity)
+			throws ParseException, JSONException {
+
+		List<Map<String, String>> nonGeometryEntityList = new ArrayList<>();
+
+		GeometryBean geometryBean = new GeometryBean();
+
+		for (GeometryEntity geometry : geometryEntity) {
+
+			Map<String, String> coordinatesMap = new LinkedHashMap<>();
+
+			geometryBean = convertToGeometryBean(geometry);
+
+			coordinatesMap.put("point", geometryBean.getGeom().toString());
+
+			nonGeometryEntityList.add(coordinatesMap);
+		}
+
+		return nonGeometryEntityList;
+
+	}
 
 	public static GeometryEntity convertToGeometryEntity(NonGeometryEntity nonGeometry) throws ParseException {
 
 		GeometryEntity geometryEntity = new GeometryEntity();
 
-		UserEntity userEntity;
-
 		geometryEntity.setUserId(Long.parseLong(nonGeometry.getUserId()));
 
 		geometryEntity.setPointName(nonGeometry.getPointName());
 		geometryEntity.setGeom(wktToGeometry(nonGeometry.getGeom()));
+
+		geometryEntity.setUserEmail(nonGeometry.getUserEmail());
 
 		geometryEntity.getGeom().setSRID(3857);
 
@@ -60,29 +72,78 @@ public class GeometryEntityConverter {
 
 	}
 
-	public static List<NonGeometryEntity> convertToNonGeometryEntity(List<GeometryEntity> geometryEntity)
-			throws ParseException {
+	public static GeometryBean convertToGeometryBean(GeometryEntity geometryEntity)
+			throws ParseException, JSONException {
 
-		List<NonGeometryEntity> nonGeometryEntityList = new ArrayList<>();
+		String featureType = new String();
 
-		for (GeometryEntity geometry : geometryEntity) {
+		String lat = new String();
 
-			NonGeometryEntity nonGeometryEntity = new NonGeometryEntity();
+		List<String> geoPropertiesList = new ArrayList<>();
 
-			nonGeometryEntity.setUserId(geometry.getUserId().toString());
-			nonGeometryEntity.setPointName(geometry.getPointName());
-			nonGeometryEntity.setGeom(geometry.getGeom().toString());
+		if (geometryEntity.getGeom().toString().contains("POINT")) {
 
-			nonGeometryEntityList.add(nonGeometryEntity);
+			geoPropertiesList = extractFeatureType(geometryEntity.getGeom().toString());
+
+			featureType = geoPropertiesList.get(0);
+			lat = geoPropertiesList.get(1);
 		}
 
-		return nonGeometryEntityList;
+		GeometryBean geometryBean = new GeometryBean();
+
+		String mapLat = lat;
+
+		JSONObject geoJson = new JSONObject();
+
+		JSONObject geoJsonGeom = new JSONObject();
+
+		JSONObject geoJsonProperties = new JSONObject();
+
+		geoJsonGeom.put("type", featureType);
+
+		geoJsonGeom.put("coordinates", mapLat);
+
+		geoJson.put("type", "feature");
+
+		geoJson.put("geometry", geoJsonGeom);
+
+		geoJsonProperties.put("name", geometryEntity.getPointName());
+
+		geoJson.put("properties", geoJsonProperties);
+		geometryBean.setUserId(geometryEntity.getId());
+		geometryBean.setPointName(geometryEntity.getPointName());
+		geometryBean.setGeom(geoJson);
+
+		return geometryBean;
 
 	}
 
-	public static Geometry wktToGeometry(String wellKnownText) throws ParseException {
+	/**
+	 * Method to extract the type of feature, lat and long
+	 * 
+	 * @param geoInfo
+	 * @return
+	 */
+	private static List<String> extractFeatureType(String geoInfo) {
 
-		return new WKTReader().read(wellKnownText);
+		List<String> stringExtraction = new ArrayList<>();
+
+		String typeOfFeature = geoInfo.substring(0, 5);
+
+		String coords = geoInfo.substring(7, 23);
+
+		if (typeOfFeature != null) {
+			stringExtraction.add(typeOfFeature);
+		}
+
+		stringExtraction.add(coords);
+
+		return stringExtraction;
+	}
+
+	public static Point wktToGeometry(String wellKnownText) throws ParseException {
+
+		return (Point) new WKTReader().read(wellKnownText);
 	}
 
 }
