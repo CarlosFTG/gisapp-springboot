@@ -55,8 +55,8 @@ public class UserService implements IUserService {
 			loginUser.setUserName(userFound.getUserName());
 			loginUser.setEmail(userFound.getEmail());
 			loginUser.setToken(getJWTToken(userFound.getEmail()));
-			//loginUser.setGeometriesList(userFound.getGeometriesList());
 			userToConvert.setToken(getJWTToken(userFound.getEmail()));
+			userToConvert.setUserPassword(userFound.getUserPassword());
 			return userToConvert;
 
 		} else {

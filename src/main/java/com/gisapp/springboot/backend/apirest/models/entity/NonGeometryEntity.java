@@ -18,7 +18,7 @@ public class NonGeometryEntity {
 	
 	private String userEmail;
 
-	private String pointName;
+	private String geometryName;
 
 	private String geom;
 
@@ -31,11 +31,11 @@ public class NonGeometryEntity {
 	}
 
 	public String getPointName() {
-		return pointName;
+		return geometryName;
 	}
 
 	public void setPointName(String pointName) {
-		this.pointName = pointName;
+		this.geometryName = pointName;
 	}
 
 	public String getUserId() {

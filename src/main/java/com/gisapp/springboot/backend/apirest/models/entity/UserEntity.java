@@ -46,9 +46,15 @@ public class UserEntity implements Serializable {
 	
 	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
 	@JoinColumn(name="user_id")
-	private List<GeometryEntity> geometriesList;
+	private List<PointsEntity> pointsList;
 	
-	
+	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+	@JoinColumn(name="user_id")
+	private List<PolygonEntity> polygonsList;
+
+	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+	@JoinColumn(name="user_id")
+	private List<LineEntity> linesList;
 
 	public Long getId() {
 		return id;
@@ -98,12 +104,12 @@ public class UserEntity implements Serializable {
 		this.appAdmin = appAdmin;
 	}
 
-	public List<GeometryEntity> getGeometriesList() {
-		return geometriesList;
+	public List<PointsEntity> getPointsList() {
+		return pointsList;
 	}
 
-	public void setGeometriesList(List<GeometryEntity> geometriesList) {
-		this.geometriesList = geometriesList;
+	public void setPointsList(List<PointsEntity> geometriesList) {
+		this.pointsList = geometriesList;
 	}
 
 	public String getToken() {
@@ -114,6 +120,20 @@ public class UserEntity implements Serializable {
 		this.token = token;
 	}
 	
-	
+	public List<PolygonEntity> getPolygonsList() {
+		return polygonsList;
+	}
+
+	public void setPolygonsList(List<PolygonEntity> polygonsList) {
+		this.polygonsList = polygonsList;
+	}
+
+	public List<LineEntity> getLinesList() {
+		return linesList;
+	}
+
+	public void setLinesList(List<LineEntity> linesList) {
+		this.linesList = linesList;
+	}
 	
 }

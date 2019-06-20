@@ -2,7 +2,7 @@ package com.gisapp.springboot.backend.apirest.models.bean;
 
 import org.json.JSONObject;
 
-public class GeometryBean {
+public class PointBean {
 	
 	private Long id;
 

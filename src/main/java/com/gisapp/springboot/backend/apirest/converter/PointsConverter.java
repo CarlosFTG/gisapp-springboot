@@ -8,43 +8,43 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.gisapp.springboot.backend.apirest.models.bean.GeometryBean;
-import com.gisapp.springboot.backend.apirest.models.entity.GeometryEntity;
+import com.gisapp.springboot.backend.apirest.models.bean.PointBean;
+import com.gisapp.springboot.backend.apirest.models.entity.PointsEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.NonGeometryEntity;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 
-public class GeometryEntityConverter {
+public class PointsConverter {
 
-	public List<GeometryEntity> convertToGeometryEntityList(List<NonGeometryEntity> nonGeometryList)
+	public List<PointsEntity> convertToPointEntityList(List<NonGeometryEntity> nonGeometryList)
 			throws ParseException {
 
-		List<GeometryEntity> geometryEntityList = new ArrayList<>();
+		List<PointsEntity> geometryEntityList = new ArrayList<>();
 
-		GeometryEntity geometryEntity = new GeometryEntity();
+		PointsEntity geometryEntity = new PointsEntity();
 
 		for (NonGeometryEntity nonGeometry : nonGeometryList) {
 
-			geometryEntity = convertToGeometryEntity(nonGeometry);
+			geometryEntity = convertToPointEntity(nonGeometry);
 			geometryEntityList.add(geometryEntity);
 		}
 
 		return geometryEntityList;
 	}
 
-	public static List<Map<String, String>> convertToGeometryBean(List<GeometryEntity> geometryEntity)
+	public static List<Map<String, String>> convertToGeometryBeanList(List<PointsEntity> geometryEntityList)
 			throws ParseException, JSONException {
 
 		List<Map<String, String>> nonGeometryEntityList = new ArrayList<>();
 
-		GeometryBean geometryBean = new GeometryBean();
+		PointBean geometryBean = new PointBean();
 
-		for (GeometryEntity geometry : geometryEntity) {
+		for (PointsEntity geometry : geometryEntityList) {
 
 			Map<String, String> coordinatesMap = new LinkedHashMap<>();
 
-			geometryBean = convertToGeometryBean(geometry);
+			geometryBean = convertToPointBean(geometry);
 
 			coordinatesMap.put("point", geometryBean.getGeom().toString());
 
@@ -55,12 +55,11 @@ public class GeometryEntityConverter {
 
 	}
 
-	public static GeometryEntity convertToGeometryEntity(NonGeometryEntity nonGeometry) throws ParseException {
+	public static PointsEntity convertToPointEntity(NonGeometryEntity nonGeometry) throws ParseException {
 
-		GeometryEntity geometryEntity = new GeometryEntity();
+		PointsEntity geometryEntity = new PointsEntity();
 
 		geometryEntity.setUserId(Long.parseLong(nonGeometry.getUserId()));
-
 		geometryEntity.setPointName(nonGeometry.getPointName());
 		geometryEntity.setGeom(wktToGeometry(nonGeometry.getGeom()));
 
@@ -72,7 +71,7 @@ public class GeometryEntityConverter {
 
 	}
 
-	public static GeometryBean convertToGeometryBean(GeometryEntity geometryEntity)
+	public static PointBean convertToPointBean(PointsEntity geometryEntity)
 			throws ParseException, JSONException {
 
 		String featureType = new String();
@@ -89,7 +88,7 @@ public class GeometryEntityConverter {
 			lat = geoPropertiesList.get(1);
 		}
 
-		GeometryBean geometryBean = new GeometryBean();
+		PointBean geometryBean = new PointBean();
 
 		String mapLat = lat;
 
@@ -117,6 +116,26 @@ public class GeometryEntityConverter {
 		return geometryBean;
 
 	}
+	
+	public static List<JSONObject> convertoListGeometriesEntitiesListToGeometriesBeansList(List<PointsEntity> geometryEntityList) throws ParseException, JSONException{
+		
+		List<JSONObject> geometryBeanList = new ArrayList<>();
+				
+		
+		for(PointsEntity geometryEntity:geometryEntityList) {
+			
+			JSONObject geoJson = new JSONObject();
+			
+			geoJson.put("type", "MultiPoint");
+			geoJson.put("coordinates", geometryEntity.getGeom());
+			
+			geometryBeanList.add(geoJson);
+		}
+		
+		
+		return geometryBeanList;
+		
+	}
 
 	/**
 	 * Method to extract the type of feature, lat and long
@@ -128,12 +147,14 @@ public class GeometryEntityConverter {
 
 		List<String> stringExtraction = new ArrayList<>();
 
-		String typeOfFeature = geoInfo.substring(0, 5);
+		String typeOfFeature = geoInfo.substring(0, 5).toLowerCase();
+		
+		String typeOfFeatureTreated=typeOfFeature.substring(0, 1).toUpperCase() + typeOfFeature.substring(1);
 
-		String coords = geoInfo.substring(7, 23);
+		String coords = geoInfo.substring(geoInfo.indexOf("(")+1,geoInfo.indexOf(")"));
 
-		if (typeOfFeature != null) {
-			stringExtraction.add(typeOfFeature);
+		if (typeOfFeatureTreated != null) {
+			stringExtraction.add(typeOfFeatureTreated);
 		}
 
 		stringExtraction.add(coords);

@@ -17,8 +17,9 @@ public class UserConverter {
 		userBean.setUserName(userEntity.getUserName());
 		userBean.setSurname(userEntity.getSurname());
 		userBean.setEmail(userEntity.getEmail());
-		userBean.setGeometriesList(GeometryEntityConverter.convertToGeometryBean(userEntity.getGeometriesList()));
-		
+		userBean.setPointsList(PointsConverter.convertToGeometryBeanList(userEntity.getPointsList()));
+		userBean.setPolygonsList(PolygonsConverter.convertToPolygonBeanList(userEntity.getPolygonsList()));
+		userBean.setLinesList(LinesConverter.convertToLineBeanList(userEntity.getLinesList()));
 		
 		return userBean;
 	}

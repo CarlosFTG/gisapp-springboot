@@ -1,8 +1,10 @@
 package com.gisapp.springboot.backend.apirest.controllers;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,9 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gisapp.springboot.backend.apirest.converter.GeometryEntityConverter;
+import com.gisapp.springboot.backend.apirest.converter.LinesConverter;
+import com.gisapp.springboot.backend.apirest.converter.PointsConverter;
+import com.gisapp.springboot.backend.apirest.converter.PolygonsConverter;
+import com.gisapp.springboot.backend.apirest.models.bean.PointBean;
+import com.gisapp.springboot.backend.apirest.models.bean.PolygonBean;
 import com.gisapp.springboot.backend.apirest.models.bean.UserBean;
-import com.gisapp.springboot.backend.apirest.models.entity.GeometryEntity;
+import com.gisapp.springboot.backend.apirest.models.entity.PointsEntity;
+import com.gisapp.springboot.backend.apirest.models.entity.PolygonEntity;
+import com.gisapp.springboot.backend.apirest.models.entity.LineEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.LoginEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.NonGeometryEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.UserEntity;
@@ -44,22 +52,54 @@ public class AppRestController {
 	ObjectMapper mapper = new ObjectMapper();
 
 	@GetMapping("/clientes")
-	public List<GeometryEntity> index() {
+	public List<PointsEntity> index() {
 		return geometryService.findAll();
 	}
 
-	@PostMapping("/geometries/insertGeometry")
+	@PostMapping("/geometries/insertPoint")
 	@ResponseStatus(HttpStatus.CREATED)
-	public GeometryEntity insertPoint(@RequestBody NonGeometryEntity geometry) throws ParseException {
+	public PointsEntity insertPoint(@RequestBody NonGeometryEntity geometry) throws ParseException {
 
-		GeometryEntity geomToSave = new GeometryEntity();
-		this.geometryService.save(GeometryEntityConverter.convertToGeometryEntity(geometry));
+		PointsEntity geomToSave = new PointsEntity();
+		this.geometryService.savePoint(PointsConverter.convertToPointEntity(geometry));
 		return geomToSave;
+	}
+	
+	@PostMapping("/geometries/insertPolygon")
+	@ResponseStatus(HttpStatus.CREATED)
+	public PolygonEntity insertPolygon(@RequestBody NonGeometryEntity polygonBean) throws ParseException {
+
+		PolygonEntity geomToSave = new PolygonEntity();
+		this.geometryService.savePolygons(PolygonsConverter.convertToGeometryEntity(polygonBean));
+		return geomToSave;
+	}
+	
+	@PostMapping("/geometries/insertLine")
+	@ResponseStatus(HttpStatus.CREATED)
+	public LineEntity insertLine(@RequestBody NonGeometryEntity lineBean) throws ParseException {
+
+		LineEntity geomToSave = new LineEntity();
+		this.geometryService.saveLine(LinesConverter.convertToGeometryEntity(lineBean));
+		return geomToSave;
+	}
+	
+	@PostMapping("/geometries/findPointByUserId")
+	@ResponseStatus(HttpStatus.FOUND)
+	public ResponseEntity<UserBean> findPointByUserId(@RequestBody String userId) throws ParseException, JSONException {
+		
+		return ResponseEntity.ok(this.geometryService.findPointByUserId(userId));
+	}
+	
+	@PostMapping("/geometries/findPointsIntoAPolygon")
+	@ResponseStatus(HttpStatus.FOUND)
+	public ResponseEntity<UserBean> findPointsIntoAPolygon(@RequestBody String polygon) throws ParseException, JSONException, IOException {
+		
+		return ResponseEntity.ok(this.geometryService.findPointsIntoAPolygon(polygon));
 	}
 
 	@PutMapping("/clientes/{id}")
 	@ResponseStatus(HttpStatus.CREATED)
-	public GeometryEntity update(@RequestBody GeometryEntity cliente, @PathVariable Long id) {
+	public PointsEntity update(@RequestBody PointsEntity cliente, @PathVariable Long id) {
 
 		return null;
 	}
@@ -85,7 +125,7 @@ public class AppRestController {
 
 	@PostMapping("/users/createUser")
 	@ResponseStatus(HttpStatus.CREATED)
-	public GeometryEntity createUser(@RequestBody UserEntity user) throws ParseException {
+	public PointsEntity createUser(@RequestBody UserEntity user) throws ParseException {
 
 		this.userService.save(user);
 		return null;

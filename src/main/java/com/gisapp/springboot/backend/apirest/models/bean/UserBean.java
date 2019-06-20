@@ -24,8 +24,12 @@ public class UserBean {
 	
 	private String token;
 	
-	private List<Map<String, String>> geometriesList;
+	private List<Map<String, String>> pointsList;
+	
+	private List<Map<String, String>> polygonsList;
 
+	private List<Map<String, String>> linesList;
+	
 	public Long getId() {
 		return id;
 	}
@@ -82,12 +86,28 @@ public class UserBean {
 		this.token = token;
 	}
 
-	public List<Map<String, String>> getGeometriesList() {
-		return geometriesList;
+	public List<Map<String, String>> getPointsList() {
+		return pointsList;
 	}
 
-	public void setGeometriesList(List<Map<String, String>> geometriesList) {
-		this.geometriesList = geometriesList;
+	public void setPointsList(List<Map<String, String>> geometriesList) {
+		this.pointsList = geometriesList;
+	}
+
+	public List<Map<String, String>> getPolygonsList() {
+		return polygonsList;
+	}
+
+	public void setPolygonsList(List<Map<String, String>> polygonsList) {
+		this.polygonsList = polygonsList;
+	}
+
+	public List<Map<String, String>> getLinesList() {
+		return linesList;
+	}
+
+	public void setLinesList(List<Map<String, String>> linesList) {
+		this.linesList = linesList;
 	}
 	
 	

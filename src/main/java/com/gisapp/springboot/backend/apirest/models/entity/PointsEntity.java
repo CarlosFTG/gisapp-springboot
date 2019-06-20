@@ -13,7 +13,7 @@ import com.vividsolutions.jts.geom.Point;
 
 @Entity
 @Table(name = "points")
-public class GeometryEntity implements Serializable {
+public class PointsEntity implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
