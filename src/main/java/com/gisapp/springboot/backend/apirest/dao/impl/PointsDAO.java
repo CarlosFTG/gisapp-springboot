@@ -42,7 +42,37 @@ public class PointsDAO implements IGeometriesDAO {
 		return userFound;
 		
 	}
+	
+	@Override
+	public List<PointsEntity> findPointsByUserIdAndCoords(List<PointsEntity> pointsList) {
+		
+		StringBuffer sb = new StringBuffer();
+		
+		PointsEntity pointFound = new PointsEntity();
+		
+		List<PointsEntity> pointsFoundList = new ArrayList<PointsEntity>();
+		
+		for(PointsEntity point : pointsList) {
+			
+			sb.append("select p from PointsEntity p "
+					+ "where user_id in (:userId) "
+					+ "and coordinates in (:coordinates)");
+					
+					Query q = em.createQuery(sb.toString());
+					
+					q.setParameter("userId",point.getUserId());
+					
+					q.setParameter("coordinates",point.getGeom());
+					
+					pointFound= (PointsEntity) q.getSingleResult();
+					
+					pointsFoundList.add(pointFound);
+			}
+		
+		return pointsFoundList;
+	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<PointsEntity> findPointsIntoAPolygon(TempPolygonEntity polygon) {
 		

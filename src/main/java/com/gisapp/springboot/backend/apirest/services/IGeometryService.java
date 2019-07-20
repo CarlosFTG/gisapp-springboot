@@ -30,4 +30,6 @@ public interface IGeometryService {
 
 	void saveLine(LineEntity line);
 
+	void removePoint(List<PointsEntity> pointsList);
+
 }

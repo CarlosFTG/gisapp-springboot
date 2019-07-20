@@ -17,7 +17,7 @@ import com.vividsolutions.jts.io.WKTReader;
 
 public class PointsConverter {
 
-	public List<PointsEntity> convertToPointEntityList(List<NonGeometryEntity> nonGeometryList)
+	public static List<PointsEntity> convertToPointEntityList(List<NonGeometryEntity> nonGeometryList)
 			throws ParseException {
 
 		List<PointsEntity> geometryEntityList = new ArrayList<>();
@@ -58,8 +58,12 @@ public class PointsConverter {
 	public static PointsEntity convertToPointEntity(NonGeometryEntity nonGeometry) throws ParseException {
 
 		PointsEntity geometryEntity = new PointsEntity();
+		
+		geometryEntity.setId(nonGeometry.getId());
+		if(nonGeometry.getUserId() != null) {
+			geometryEntity.setUserId(Long.parseLong(nonGeometry.getUserId()));
 
-		geometryEntity.setUserId(Long.parseLong(nonGeometry.getUserId()));
+		}
 		geometryEntity.setPointName(nonGeometry.getPointName());
 		geometryEntity.setGeom(wktToGeometry(nonGeometry.getGeom()));
 		geometryEntity.setFacility(nonGeometry.getFacility());

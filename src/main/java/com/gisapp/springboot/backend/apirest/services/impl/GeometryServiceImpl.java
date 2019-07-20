@@ -1,6 +1,7 @@
 package com.gisapp.springboot.backend.apirest.services.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ import com.gisapp.springboot.backend.apirest.dao.ILinesGenericDAO;
 import com.gisapp.springboot.backend.apirest.dao.IPointsGenericDao;
 import com.gisapp.springboot.backend.apirest.dao.IPolygonsGenericDAO;
 import com.gisapp.springboot.backend.apirest.dao.ITempPolygonGenericDAO;
+import com.gisapp.springboot.backend.apirest.dao.impl.PointsDAO;
 import com.gisapp.springboot.backend.apirest.models.bean.UserBean;
 import com.gisapp.springboot.backend.apirest.models.entity.LineEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.PointsEntity;
@@ -55,6 +57,24 @@ public class GeometryServiceImpl implements IGeometryService {
 	public void savePoint(PointsEntity point) {
 
 		pointsGenericDao.save(point);
+	}
+	
+	@Override
+	@Transactional
+	public void removePoint(List<PointsEntity> pointsList) {
+		
+		List<PointsEntity> pointsFoundList=new ArrayList<>();
+		
+		//as having problems to get the attributes on the front end, the
+		//points to remove are found by user id and coords
+		//the with the point id, delete method is called
+		pointsFoundList=geometriesDao.findPointsByUserIdAndCoords(pointsList);
+		
+		for(PointsEntity point:pointsFoundList) {
+			
+			pointsGenericDao.deleteById(point.getId());
+		}
+		
 	}
 	
 	@Override

@@ -132,4 +132,11 @@ public class AppRestController {
 		return null;
 	}
 	
+	@PostMapping("/geometries/removePoint")
+	@ResponseStatus(HttpStatus.CREATED)
+	public void removePoint(@RequestBody List<NonGeometryEntity> geometryList) throws ParseException {
+
+		this.geometryService.removePoint(PointsConverter.convertToPointEntityList(geometryList));
+	}
+	
 }
