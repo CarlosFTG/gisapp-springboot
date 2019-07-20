@@ -2,6 +2,7 @@ package com.gisapp.springboot.backend.apirest.services;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,7 +24,7 @@ public interface IGeometryService {
 	
 	public UserBean findPointByUserId(String userId) throws ParseException, JSONException;
 	
-	public UserBean findPointsIntoAPolygon(String polygon) throws ParseException, IOException;
+	public List<Map<String, String>> findPointsIntoAPolygon(String polygon) throws ParseException, IOException, JSONException;
 
 	void savePolygons(PolygonEntity polygon);
 

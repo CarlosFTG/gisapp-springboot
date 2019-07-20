@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import com.gisapp.springboot.backend.apirest.models.bean.PolygonBean;
 import com.gisapp.springboot.backend.apirest.models.entity.NonGeometryEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.PolygonEntity;
+import com.gisapp.springboot.backend.apirest.models.entity.TempPolygonEntity;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
@@ -49,6 +50,8 @@ public class PolygonsConverter {
 		return geometryEntity;
 
 	}
+	
+	
 	
 	public static List<Map<String, String>> convertToPolygonBeanList(List<PolygonEntity> geometryEntityList)
 			throws ParseException, JSONException {
@@ -116,11 +119,13 @@ public class PolygonsConverter {
 		return polygonBean;
 
 	}
-	public static PolygonEntity convertFromJSONToPolygonEntity(String polygon) throws ParseException {
+	public static TempPolygonEntity convertFromStringToPolygonEntity(String polygon) throws ParseException {
 		
-		PolygonEntity polygonEntity = new PolygonEntity();
+		TempPolygonEntity polygonEntity = new TempPolygonEntity();
 		
-		polygonEntity.setGeom(wktToGeometry(polygon));
+		polygonEntity.setCoordinates(wktToGeometryTemp(polygon));
+		
+		polygonEntity.getCoordinates().setSRID(3857);
 		
 		return polygonEntity;	
 	}
@@ -169,7 +174,23 @@ public class PolygonsConverter {
 	}
 	
 	public static Polygon wktToGeometry(String wellKnownText) throws ParseException {
+		
+		int firstComma =wellKnownText.indexOf(",");
+		int firstReverseParenthesis=wellKnownText.indexOf(")");
+		String initialCoord=wellKnownText.substring(9,firstComma);
+		String treatedString=wellKnownText.substring(0,firstReverseParenthesis);
+		
+		return (Polygon) new WKTReader().read(treatedString+","+initialCoord+"))");
+	}
+	
+public static Polygon wktToGeometryTemp(String wellKnownText) throws ParseException {
+		
+		int firstComma =wellKnownText.indexOf(",");
+		int firstReverseParenthesis=wellKnownText.indexOf(")");
+		String initialCoord=wellKnownText.substring(10,firstComma);
+		String treatedString=wellKnownText.substring(0,firstReverseParenthesis);
+		
 
-		return (Polygon) new WKTReader().read(wellKnownText);
+		return (Polygon) new WKTReader().read(treatedString+","+initialCoord+"))");
 	}
 }

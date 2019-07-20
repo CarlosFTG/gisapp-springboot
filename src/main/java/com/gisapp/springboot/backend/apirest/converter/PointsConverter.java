@@ -62,7 +62,7 @@ public class PointsConverter {
 		geometryEntity.setUserId(Long.parseLong(nonGeometry.getUserId()));
 		geometryEntity.setPointName(nonGeometry.getPointName());
 		geometryEntity.setGeom(wktToGeometry(nonGeometry.getGeom()));
-
+		geometryEntity.setFacility(nonGeometry.getFacility());
 		geometryEntity.setUserEmail(nonGeometry.getUserEmail());
 
 		geometryEntity.getGeom().setSRID(3857);
@@ -107,6 +107,10 @@ public class PointsConverter {
 		geoJson.put("geometry", geoJsonGeom);
 
 		geoJsonProperties.put("name", geometryEntity.getPointName());
+		
+		geoJsonProperties.put("id", geometryEntity.getId());
+		
+		geoJsonProperties.put("facility", geometryEntity.getFacility());
 
 		geoJson.put("properties", geoJsonProperties);
 		geometryBean.setUserId(geometryEntity.getId());

@@ -2,6 +2,7 @@ package com.gisapp.springboot.backend.apirest.controllers;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -92,7 +93,7 @@ public class AppRestController {
 	
 	@PostMapping("/geometries/findPointsIntoAPolygon")
 	@ResponseStatus(HttpStatus.FOUND)
-	public ResponseEntity<UserBean> findPointsIntoAPolygon(@RequestBody String polygon) throws ParseException, JSONException, IOException {
+	public ResponseEntity<List<Map<String, String>>> findPointsIntoAPolygon(@RequestBody String polygon) throws ParseException, JSONException, IOException {
 		
 		return ResponseEntity.ok(this.geometryService.findPointsIntoAPolygon(polygon));
 	}

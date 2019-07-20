@@ -21,6 +21,8 @@ public class NonGeometryEntity {
 	private String geometryName;
 
 	private String geom;
+	
+	private String facility;
 
 	public String getGeom() {
 		return geom;
@@ -52,5 +54,13 @@ public class NonGeometryEntity {
 
 	public void setUserEmail(String userEmail) {
 		this.userEmail = userEmail;
+	}
+
+	public String getFacility() {
+		return facility;
+	}
+
+	public void setFacility(String facility) {
+		this.facility = facility;
 	}
 }

@@ -2,11 +2,14 @@ package com.gisapp.springboot.backend.apirest.models.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.vividsolutions.jts.geom.Point;
@@ -28,6 +31,9 @@ public class PointsEntity implements Serializable {
 
 	@Column(name = "point_name")
 	private String pointName;
+	
+	@Column(name = "facility")
+	private String facility;
 
 	@Column(name = "coordinates")
 	private Point coordinates;
@@ -44,8 +50,8 @@ public class PointsEntity implements Serializable {
 		return userId;
 	}
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
+	public void setUserId(Long userEntity) {
+		this.userId = userEntity;
 	}
 
 	public String getPointName() {
@@ -70,6 +76,14 @@ public class PointsEntity implements Serializable {
 
 	public void setUserEmail(String userEmail) {
 		this.userEmail = userEmail;
+	}
+	
+	public String getFacility() {
+		return facility;
+	}
+
+	public void setFacility(String facility) {
+		this.facility = facility;
 	}
 
 	private static final long serialVersionUID = 1L;

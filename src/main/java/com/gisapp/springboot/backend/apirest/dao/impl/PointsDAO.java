@@ -5,19 +5,15 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.ParameterMode;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.StoredProcedureQuery;
 
 import org.springframework.stereotype.Repository;
 
 import com.gisapp.springboot.backend.apirest.dao.IGeometriesDAO;
 import com.gisapp.springboot.backend.apirest.models.entity.PointsEntity;
+import com.gisapp.springboot.backend.apirest.models.entity.TempPolygonEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.UserEntity;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.util.GeometricShapeFactory;
 
 @Repository
 public class PointsDAO implements IGeometriesDAO {
@@ -48,24 +44,21 @@ public class PointsDAO implements IGeometriesDAO {
 	}
 
 	@Override
-	public Object findPointsIntoAPolygon() {
+	public List<PointsEntity> findPointsIntoAPolygon(TempPolygonEntity polygon) {
 		
+		StringBuffer sb = new StringBuffer();
+		sb.append("select p from PointsEntity p, TempPolygonEntity t "
+		+ "where within(p.coordinates, t.coordinates) = true");
 		
-		StoredProcedureQuery query = em
-				.createStoredProcedureQuery("box");
-				     
-				query.execute();
-	
+		Query q = em.createQuery(sb.toString());
+				
+		List<PointsEntity> pointsFound = new ArrayList<PointsEntity>();
 		
-		return null;
+		try {
+			pointsFound =  q.getResultList();
+			}catch(NoResultException nre){
+			}
+		
+		return pointsFound;
 	}
-	
-	public Geometry createCircle(double x, double y, double radius) {
-	    GeometricShapeFactory shapeFactory = new GeometricShapeFactory();
-	    shapeFactory.setNumPoints(32);
-	    shapeFactory.setCentre(new Coordinate(x, y));
-	    shapeFactory.setSize(radius * 2);
-	    return shapeFactory.createCircle();
-	}
-
 }
