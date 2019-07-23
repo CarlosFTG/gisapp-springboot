@@ -25,11 +25,17 @@ public class PolygonEntity implements Serializable {
 	@Column(name = "user_email")
 	private String userEmail;
 
-	@Column(name = "point_name")
-	private String pointName;
+	@Column(name = "polygon_name")
+	private String polygonName;
 
 	@Column(name = "coordinates")
 	private Polygon coordinates;
+	
+	@Column(name = "facility")
+	private String facility;
+	
+	@Column(name = "isBuffer")
+	private boolean isBuffer;
 
 	public Long getId() {
 		return id;
@@ -47,12 +53,12 @@ public class PolygonEntity implements Serializable {
 		this.userId = userId;
 	}
 
-	public String getPointName() {
-		return pointName;
+	public String getPolygonName() {
+		return polygonName;
 	}
 
-	public void setPointName(String pointName) {
-		this.pointName = pointName;
+	public void setPolygonName(String pointName) {
+		this.polygonName = pointName;
 	}
 
 	public Polygon getGeom() {
@@ -69,6 +75,22 @@ public class PolygonEntity implements Serializable {
 
 	public void setUserEmail(String userEmail) {
 		this.userEmail = userEmail;
+	}
+
+	public String getFacility() {
+		return facility;
+	}
+
+	public void setFacility(String facility) {
+		this.facility = facility;
+	}
+
+	public boolean isBuffer() {
+		return isBuffer;
+	}
+
+	public void setBuffer(boolean isBuffer) {
+		this.isBuffer = isBuffer;
 	}
 
 	private static final long serialVersionUID = 1L;

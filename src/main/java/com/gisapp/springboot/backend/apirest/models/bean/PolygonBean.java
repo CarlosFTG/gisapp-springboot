@@ -13,6 +13,8 @@ public class PolygonBean {
 	private String userEmail;
 
 	private JSONObject geom;
+	
+	private boolean isBuffer;
 
 	public Long getId() {
 		return id;
@@ -52,6 +54,14 @@ public class PolygonBean {
 
 	public void setUserEmail(String userEmail) {
 		this.userEmail = userEmail;
+	}
+
+	public boolean isBuffer() {
+		return isBuffer;
+	}
+
+	public void setBuffer(boolean isBuffer) {
+		this.isBuffer = isBuffer;
 	}
 	
 	

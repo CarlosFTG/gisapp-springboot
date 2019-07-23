@@ -25,11 +25,11 @@ import com.gisapp.springboot.backend.apirest.models.entity.PointsEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.PolygonEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.TempPolygonEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.UserEntity;
-import com.gisapp.springboot.backend.apirest.services.IGeometryService;
+import com.gisapp.springboot.backend.apirest.services.IPointService;
 import com.vividsolutions.jts.io.ParseException;
 
 @Service
-public class GeometryServiceImpl implements IGeometryService {
+public class PointServiceImpl implements IPointService {
 
 	@Autowired
 	private IPointsGenericDao pointsGenericDao;
@@ -100,7 +100,7 @@ public class GeometryServiceImpl implements IGeometryService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public UserBean findPointByUserId(String userId) throws ParseException, JSONException {
+	public UserBean findFeaturesByUserId(String userId) throws ParseException, JSONException {
 		
 		UserEntity userFound= (UserEntity) geometriesDao.findPointsByUserId(userId);
 		UserBean userToConvert = UserConverter.convertToUserBean(userFound);

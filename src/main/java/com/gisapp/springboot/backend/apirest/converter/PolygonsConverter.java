@@ -8,6 +8,7 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.gisapp.springboot.backend.apirest.models.bean.BufferBean;
 import com.gisapp.springboot.backend.apirest.models.bean.PolygonBean;
 import com.gisapp.springboot.backend.apirest.models.entity.NonGeometryEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.PolygonEntity;
@@ -17,6 +18,56 @@ import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 
 public class PolygonsConverter {
+	
+	/**
+	 * As buffer is Polygon type, it converts to BufferBean
+	 * 
+	 * @param polygonList
+	 * @return
+	 */
+	public static List<BufferBean> convertFromBufferListToBufferBeanList(List<Polygon> polygonList) {
+
+		BufferBean bufferBean = new BufferBean();
+
+		List<BufferBean> bufferBeanList = new ArrayList<BufferBean>();
+
+		for (Polygon polygon : polygonList) {
+
+			bufferBean = convertFromBufferToBufferBean(polygon);
+
+			bufferBeanList.add(bufferBean);
+		}
+
+		return bufferBeanList;
+
+	}
+	
+	/**
+	 * The bean created in the operation done in the DAO is transformed to PoygonEntity
+	 * in order to be saved in the db as a regular polygon
+	 * @param buffer
+	 * @param bufferIn
+	 * @return
+	 */
+	public static PolygonEntity convertFromBufferBeanToBufferEntity(Polygon buffer, NonGeometryEntity bufferIn) {
+		PolygonEntity polygonEntity = new PolygonEntity();
+		
+		polygonEntity.setGeom(buffer);
+		polygonEntity.setFacility(bufferIn.getFacility());
+		polygonEntity.setUserId(Long.parseLong(bufferIn.getUserId()));
+		polygonEntity.setBuffer(true);
+		return polygonEntity;
+	}
+	
+	public static BufferBean convertFromBufferToBufferBean(Polygon polygon) {
+
+		BufferBean bufferBean = new BufferBean();
+
+		bufferBean.setCoordinates(polygon.getCoordinates());
+
+		return bufferBean;
+
+	}
 	
 	public static List<PolygonEntity> convertToPolygonsEntityList(List<NonGeometryEntity> nonGeometryList)
 			throws ParseException {
@@ -40,7 +91,7 @@ public class PolygonsConverter {
 
 		geometryEntity.setUserId(Long.parseLong(nonGeometry.getUserId()));
 
-		geometryEntity.setPointName(nonGeometry.getPointName());
+		geometryEntity.setPolygonName(nonGeometry.getPointName());
 		geometryEntity.setGeom(wktToGeometry(nonGeometry.getGeom()));
 
 		geometryEntity.setUserEmail(nonGeometry.getUserEmail());
@@ -109,12 +160,13 @@ public class PolygonsConverter {
 
 		geoJson.put("geometry", geoJsonGeom);
 
-		geoJsonProperties.put("name", geometryEntity.getPointName());
+		geoJsonProperties.put("name", geometryEntity.getPolygonName());
 
 		geoJson.put("properties", geoJsonProperties);
 		polygonBean.setUserId(geometryEntity.getId());
-		polygonBean.setPolygonName(geometryEntity.getPointName());
+		polygonBean.setPolygonName(geometryEntity.getPolygonName());
 		polygonBean.setGeom(geoJson);
+		polygonBean.setBuffer(geometryEntity.isBuffer());
 
 		return polygonBean;
 
@@ -123,7 +175,7 @@ public class PolygonsConverter {
 		
 		TempPolygonEntity polygonEntity = new TempPolygonEntity();
 		
-		polygonEntity.setCoordinates(wktToGeometryTemp(polygon));
+		polygonEntity.setCoordinates(wktToGeometry(polygon));
 		
 		polygonEntity.getCoordinates().setSRID(3857);
 		
@@ -136,7 +188,7 @@ public class PolygonsConverter {
 
 		polygonEntity.setUserId(Long.parseLong(nonGeometry.getUserId()));
 
-		polygonEntity.setPointName(nonGeometry.getPointName());
+		polygonEntity.setPolygonName(nonGeometry.getPointName());
 		polygonEntity.setGeom(wktToGeometry(nonGeometry.getGeom().toString()));
 
 		polygonEntity.setUserEmail(nonGeometry.getUserEmail());
@@ -180,17 +232,6 @@ public class PolygonsConverter {
 		String initialCoord=wellKnownText.substring(9,firstComma);
 		String treatedString=wellKnownText.substring(0,firstReverseParenthesis);
 		
-		return (Polygon) new WKTReader().read(treatedString+","+initialCoord+"))");
-	}
-	
-public static Polygon wktToGeometryTemp(String wellKnownText) throws ParseException {
-		
-		int firstComma =wellKnownText.indexOf(",");
-		int firstReverseParenthesis=wellKnownText.indexOf(")");
-		String initialCoord=wellKnownText.substring(10,firstComma);
-		String treatedString=wellKnownText.substring(0,firstReverseParenthesis);
-		
-
 		return (Polygon) new WKTReader().read(treatedString+","+initialCoord+"))");
 	}
 }

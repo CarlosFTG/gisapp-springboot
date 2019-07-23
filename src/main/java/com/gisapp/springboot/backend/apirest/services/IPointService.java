@@ -14,7 +14,7 @@ import com.gisapp.springboot.backend.apirest.models.entity.PointsEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.PolygonEntity;
 import com.vividsolutions.jts.io.ParseException;
 
-public interface IGeometryService {
+public interface IPointService {
 
 	public List<PointsEntity> findAll();
 
@@ -22,7 +22,7 @@ public interface IGeometryService {
 
 	public void delete(PointsEntity cliente);
 	
-	public UserBean findPointByUserId(String userId) throws ParseException, JSONException;
+	public UserBean findFeaturesByUserId(String userId) throws ParseException, JSONException;
 	
 	public List<Map<String, String>> findPointsIntoAPolygon(String polygon) throws ParseException, IOException, JSONException;
 

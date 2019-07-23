@@ -1,11 +1,5 @@
 package com.gisapp.springboot.backend.apirest.models.entity;
 
-import java.util.List;
-
-import javax.persistence.Column;
-
-import com.vividsolutions.jts.geom.Geometry;
-
 /**
  * Class to convert the json that comes from the front-end to the GeometryEntity
  * through the wkt converter
@@ -13,8 +7,6 @@ import com.vividsolutions.jts.geom.Geometry;
  *
  */
 public class NonGeometryEntity {
-	
-	private Long id;
 	
 	private String userId;
 	
@@ -25,6 +17,8 @@ public class NonGeometryEntity {
 	private String geom;
 	
 	private String facility;
+	
+	private String radioBuffer;
 
 	public String getGeom() {
 		return geom;
@@ -66,11 +60,11 @@ public class NonGeometryEntity {
 		this.facility = facility;
 	}
 
-	public Long getId() {
-		return id;
+	public String getRadioBuffer() {
+		return radioBuffer;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setRadioBuffer(String radioBuffer) {
+		this.radioBuffer = radioBuffer;
 	}
 }

@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gisapp.springboot.backend.apirest.converter.LinesConverter;
 import com.gisapp.springboot.backend.apirest.converter.PointsConverter;
 import com.gisapp.springboot.backend.apirest.converter.PolygonsConverter;
+import com.gisapp.springboot.backend.apirest.models.bean.BufferBean;
 import com.gisapp.springboot.backend.apirest.models.bean.PointBean;
 import com.gisapp.springboot.backend.apirest.models.bean.PolygonBean;
 import com.gisapp.springboot.backend.apirest.models.bean.UserBean;
@@ -34,7 +35,8 @@ import com.gisapp.springboot.backend.apirest.models.entity.LineEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.LoginEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.NonGeometryEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.UserEntity;
-import com.gisapp.springboot.backend.apirest.services.IGeometryService;
+import com.gisapp.springboot.backend.apirest.services.IPointService;
+import com.gisapp.springboot.backend.apirest.services.IPolygonService;
 import com.gisapp.springboot.backend.apirest.services.IUserService;
 import com.vividsolutions.jts.io.ParseException;
 
@@ -45,16 +47,19 @@ import com.vividsolutions.jts.io.ParseException;
 public class AppRestController {
 
 	@Autowired
-	private IGeometryService geometryService;
+	private IPointService pointService;
 
 	@Autowired
 	private IUserService userService;
+	
+	@Autowired
+	private IPolygonService polygonService;
 	
 	ObjectMapper mapper = new ObjectMapper();
 
 	@GetMapping("/clientes")
 	public List<PointsEntity> index() {
-		return geometryService.findAll();
+		return pointService.findAll();
 	}
 
 	@PostMapping("/geometries/insertPoint")
@@ -62,7 +67,7 @@ public class AppRestController {
 	public PointsEntity insertPoint(@RequestBody NonGeometryEntity geometry) throws ParseException {
 
 		PointsEntity geomToSave = new PointsEntity();
-		this.geometryService.savePoint(PointsConverter.convertToPointEntity(geometry));
+		this.pointService.savePoint(PointsConverter.convertToPointEntity(geometry));
 		return geomToSave;
 	}
 	
@@ -71,7 +76,7 @@ public class AppRestController {
 	public PolygonEntity insertPolygon(@RequestBody NonGeometryEntity polygonBean) throws ParseException {
 
 		PolygonEntity geomToSave = new PolygonEntity();
-		this.geometryService.savePolygons(PolygonsConverter.convertToGeometryEntity(polygonBean));
+		this.pointService.savePolygons(PolygonsConverter.convertToGeometryEntity(polygonBean));
 		return geomToSave;
 	}
 	
@@ -80,7 +85,7 @@ public class AppRestController {
 	public LineEntity insertLine(@RequestBody NonGeometryEntity lineBean) throws ParseException {
 
 		LineEntity geomToSave = new LineEntity();
-		this.geometryService.saveLine(LinesConverter.convertToGeometryEntity(lineBean));
+		this.pointService.saveLine(LinesConverter.convertToGeometryEntity(lineBean));
 		return geomToSave;
 	}
 	
@@ -88,14 +93,14 @@ public class AppRestController {
 	@ResponseStatus(HttpStatus.FOUND)
 	public ResponseEntity<UserBean> findPointByUserId(@RequestBody String userId) throws ParseException, JSONException {
 		
-		return ResponseEntity.ok(this.geometryService.findPointByUserId(userId));
+		return ResponseEntity.ok(this.pointService.findFeaturesByUserId(userId));
 	}
 	
 	@PostMapping("/geometries/findPointsIntoAPolygon")
 	@ResponseStatus(HttpStatus.FOUND)
 	public ResponseEntity<List<Map<String, String>>> findPointsIntoAPolygon(@RequestBody String polygon) throws ParseException, JSONException, IOException {
 		
-		return ResponseEntity.ok(this.geometryService.findPointsIntoAPolygon(polygon));
+		return ResponseEntity.ok(this.pointService.findPointsIntoAPolygon(polygon));
 	}
 
 	@PutMapping("/clientes/{id}")
@@ -136,7 +141,19 @@ public class AppRestController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public void removePoint(@RequestBody List<NonGeometryEntity> geometryList) throws ParseException {
 
-		this.geometryService.removePoint(PointsConverter.convertToPointEntityList(geometryList));
+		this.pointService.removePoint(PointsConverter.convertToPointEntityList(geometryList));
+	}
+	
+	@PostMapping("/geometries/createBuffer")
+	@ResponseStatus(HttpStatus.FOUND)
+	public ResponseEntity<List<BufferBean>> createBuffer(NonGeometryEntity buffer) throws JSONException, ParseException {
+		
+		buffer.setUserId("1");
+		buffer.setFacility("Transport");
+		buffer.setRadioBuffer("0.005");
+		
+		return ResponseEntity.ok(this.polygonService.createBuffer(buffer));
+
 	}
 	
 }

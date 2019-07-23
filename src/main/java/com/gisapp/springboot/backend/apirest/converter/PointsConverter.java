@@ -59,7 +59,7 @@ public class PointsConverter {
 
 		PointsEntity geometryEntity = new PointsEntity();
 		
-		geometryEntity.setId(nonGeometry.getId());
+		//geometryEntity.setId(nonGeometry.getId());
 		if(nonGeometry.getUserId() != null) {
 			geometryEntity.setUserId(Long.parseLong(nonGeometry.getUserId()));
 
