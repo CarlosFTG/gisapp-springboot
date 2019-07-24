@@ -8,6 +8,8 @@ package com.gisapp.springboot.backend.apirest.models.entity;
  */
 public class NonGeometryEntity {
 	
+	private String pointId;
+	
 	private String userId;
 	
 	private String userEmail;
@@ -66,5 +68,13 @@ public class NonGeometryEntity {
 
 	public void setRadioBuffer(String radioBuffer) {
 		this.radioBuffer = radioBuffer;
+	}
+
+	public String getPointId() {
+		return pointId;
+	}
+
+	public void setPointId(String pointId) {
+		this.pointId = pointId;
 	}
 }

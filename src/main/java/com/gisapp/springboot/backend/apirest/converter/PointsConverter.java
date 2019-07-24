@@ -59,17 +59,24 @@ public class PointsConverter {
 
 		PointsEntity geometryEntity = new PointsEntity();
 		
-		//geometryEntity.setId(nonGeometry.getId());
+		if(nonGeometry.getPointId() != null) {
+			geometryEntity.setId(Long.parseLong(nonGeometry.getPointId()));
+
+		}
 		if(nonGeometry.getUserId() != null) {
 			geometryEntity.setUserId(Long.parseLong(nonGeometry.getUserId()));
 
 		}
 		geometryEntity.setPointName(nonGeometry.getPointName());
-		geometryEntity.setGeom(wktToGeometry(nonGeometry.getGeom()));
+		
+		if(nonGeometry.getGeom()!=null) {
+			geometryEntity.setGeom(wktToGeometry(nonGeometry.getGeom()));
+			geometryEntity.getGeom().setSRID(3857);
+
+		}
 		geometryEntity.setFacility(nonGeometry.getFacility());
 		geometryEntity.setUserEmail(nonGeometry.getUserEmail());
 
-		geometryEntity.getGeom().setSRID(3857);
 
 		return geometryEntity;
 

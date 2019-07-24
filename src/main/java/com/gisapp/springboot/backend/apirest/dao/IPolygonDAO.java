@@ -7,6 +7,6 @@ import com.vividsolutions.jts.geom.Polygon;
 
 public interface IPolygonDAO {
 
-	List<Polygon> createBuffer(NonGeometryEntity buffer);
+	List<Polygon> createBuffer(List<NonGeometryEntity> pointList);
 
 }

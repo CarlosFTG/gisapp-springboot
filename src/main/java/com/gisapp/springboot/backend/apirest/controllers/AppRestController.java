@@ -137,7 +137,7 @@ public class AppRestController {
 		return null;
 	}
 	
-	@PostMapping("/geometries/removePoint")
+	@PostMapping("/geometries/removePoints")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void removePoint(@RequestBody List<NonGeometryEntity> geometryList) throws ParseException {
 
@@ -146,13 +146,11 @@ public class AppRestController {
 	
 	@PostMapping("/geometries/createBuffer")
 	@ResponseStatus(HttpStatus.FOUND)
-	public ResponseEntity<List<BufferBean>> createBuffer(NonGeometryEntity buffer) throws JSONException, ParseException {
+	public ResponseEntity<List<BufferBean>> createBuffer(@RequestBody List<NonGeometryEntity> pointList) throws JSONException, ParseException {
 		
-		buffer.setUserId("1");
-		buffer.setFacility("Transport");
-		buffer.setRadioBuffer("0.005");
+		//buffer.setRadioBuffer("0.005");
 		
-		return ResponseEntity.ok(this.polygonService.createBuffer(buffer));
+		return ResponseEntity.ok(this.polygonService.createBuffer(pointList));
 
 	}
 	

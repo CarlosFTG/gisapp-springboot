@@ -9,6 +9,6 @@ import com.vividsolutions.jts.io.ParseException;
 
 public interface IPolygonService {
 
-	List<com.gisapp.springboot.backend.apirest.models.bean.BufferBean> createBuffer(NonGeometryEntity bufferIn) throws JSONException, ParseException;
+	List<com.gisapp.springboot.backend.apirest.models.bean.BufferBean> createBuffer(List<NonGeometryEntity> pointList) throws JSONException, ParseException;
 
 }

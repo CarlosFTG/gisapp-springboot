@@ -68,11 +68,10 @@ public class PointServiceImpl implements IPointService {
 		//as having problems to get the attributes on the front end, the
 		//points to remove are found by user id and coords
 		//the with the point id, delete method is called
-		pointsFoundList=geometriesDao.findPointsByUserIdAndCoords(pointsList);
 		
-		for(PointsEntity point:pointsFoundList) {
+		for(PointsEntity point:pointsList) {
 			
-			pointsGenericDao.deleteById(point.getId());
+			pointsGenericDao.delete(point);
 		}
 		
 	}

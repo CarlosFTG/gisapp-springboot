@@ -49,12 +49,10 @@ public class PolygonsConverter {
 	 * @param bufferIn
 	 * @return
 	 */
-	public static PolygonEntity convertFromBufferBeanToBufferEntity(Polygon buffer, NonGeometryEntity bufferIn) {
+	public static PolygonEntity convertFromBufferBeanToBufferEntity(Polygon buffer) {
 		PolygonEntity polygonEntity = new PolygonEntity();
 		
 		polygonEntity.setGeom(buffer);
-		polygonEntity.setFacility(bufferIn.getFacility());
-		polygonEntity.setUserId(Long.parseLong(bufferIn.getUserId()));
 		polygonEntity.setBuffer(true);
 		return polygonEntity;
 	}

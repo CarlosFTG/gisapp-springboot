@@ -20,7 +20,7 @@ public class PolygonDAO implements IPolygonDAO {
     private EntityManager em;
 	
 	@Override
-	public List<Polygon> createBuffer(NonGeometryEntity buffer){
+	public List<Polygon> createBuffer(List<NonGeometryEntity> pointList){
 				
 		List<Polygon> bufferList= new ArrayList<Polygon>();
 		
@@ -28,17 +28,20 @@ public class PolygonDAO implements IPolygonDAO {
 		sb.append("select buffer(p.coordinates, "
 				+ "(:radio)) from PointsEntity p "
 				+ "where userId in (:userId) "
-				+ "and facility in (:facility)");
-				
-		Query q = em.createQuery(sb.toString());
+				+ "and id in (:pointId)");
 		
-		List<Polygon> buffersFound = new ArrayList<Polygon>();
+		List<Polygon> buffersCreatedList = new ArrayList<Polygon>();
 		
-		q.setParameter("radio", Double.parseDouble(buffer.getRadioBuffer()) );
-		q.setParameter("userId",Long.parseLong(buffer.getUserId()));
-		q.setParameter("facility",buffer.getFacility());
-		buffersFound=q.getResultList();
-		
-		return buffersFound;
+		for(NonGeometryEntity point:pointList){
+			Query q = em.createQuery(sb.toString());
+			//q.setParameter("radio", Double.parseDouble(point.getRadioBuffer()) );
+			q.setParameter("radio", Double.parseDouble("0.005") );
+			q.setParameter("userId",Long.parseLong(point.getUserId()));
+			q.setParameter("pointId",Long.parseLong(point.getPointId()));
+			Polygon bufferCreated=(Polygon) q.getSingleResult();
+			buffersCreatedList.add(bufferCreated);
+			
+		}
+		return buffersCreatedList;
 	}
 }

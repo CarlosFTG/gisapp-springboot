@@ -25,20 +25,20 @@ public class PolygonService implements IPolygonService {
 	private IPolygonsGenericDAO polygonGenericDAO;
 	
 	@Override
-	public List<BufferBean> createBuffer(NonGeometryEntity bufferIn) throws JSONException, ParseException {
+	public List<BufferBean> createBuffer(List<NonGeometryEntity> pointList) throws JSONException, ParseException {
 				
 		List<Polygon> buffersCreatedList= new ArrayList<Polygon>();
 		
 		
 		List<BufferBean> bufferBeanList = new ArrayList<BufferBean>();
 		
-		buffersCreatedList=polygonDAO.createBuffer(bufferIn);
+		buffersCreatedList=polygonDAO.createBuffer(pointList);
 				
 		bufferBeanList=PolygonsConverter.convertFromBufferListToBufferBeanList(buffersCreatedList);
 		
-		for(Polygon bufferFound:buffersCreatedList) {
+		for(Polygon bufferCreated:buffersCreatedList) {
 			
-			polygonGenericDAO.save(PolygonsConverter.convertFromBufferBeanToBufferEntity(bufferFound,bufferIn));
+			polygonGenericDAO.save(PolygonsConverter.convertFromBufferBeanToBufferEntity(bufferCreated));
 		}
 		
 		return bufferBeanList;
