@@ -25,13 +25,13 @@ public class PolygonsConverter {
 	 * @param polygonList
 	 * @return
 	 */
-	public static List<BufferBean> convertFromBufferListToBufferBeanList(List<Polygon> polygonList) {
+	public static List<BufferBean> convertFromBufferListToBufferBeanList(List<PolygonEntity> polygonList) {
 
 		BufferBean bufferBean = new BufferBean();
 
 		List<BufferBean> bufferBeanList = new ArrayList<BufferBean>();
 
-		for (Polygon polygon : polygonList) {
+		for (PolygonEntity polygon : polygonList) {
 
 			bufferBean = convertFromBufferToBufferBean(polygon);
 
@@ -57,11 +57,12 @@ public class PolygonsConverter {
 		return polygonEntity;
 	}
 	
-	public static BufferBean convertFromBufferToBufferBean(Polygon polygon) {
+	public static BufferBean convertFromBufferToBufferBean(PolygonEntity polygon) {
 
 		BufferBean bufferBean = new BufferBean();
 
-		bufferBean.setCoordinates(polygon.getCoordinates());
+		bufferBean.setCoordinates(polygon.getGeom().toString());
+		bufferBean.setId(polygon.getId());
 
 		return bufferBean;
 

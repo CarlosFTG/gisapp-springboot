@@ -20,9 +20,7 @@ public class PolygonDAO implements IPolygonDAO {
     private EntityManager em;
 	
 	@Override
-	public List<Polygon> createBuffer(List<NonGeometryEntity> pointList){
-				
-		List<Polygon> bufferList= new ArrayList<Polygon>();
+	public Polygon createBuffer(NonGeometryEntity point){
 		
 		StringBuffer sb = new StringBuffer();
 		sb.append("select buffer(p.coordinates, "
@@ -30,18 +28,16 @@ public class PolygonDAO implements IPolygonDAO {
 				+ "where userId in (:userId) "
 				+ "and id in (:pointId)");
 		
-		List<Polygon> buffersCreatedList = new ArrayList<Polygon>();
 		
-		for(NonGeometryEntity point:pointList){
+		Polygon polygonEntity = null;
+		
 			Query q = em.createQuery(sb.toString());
 			//q.setParameter("radio", Double.parseDouble(point.getRadioBuffer()) );
 			q.setParameter("radio", Double.parseDouble("0.005") );
 			q.setParameter("userId",Long.parseLong(point.getUserId()));
 			q.setParameter("pointId",Long.parseLong(point.getPointId()));
-			Polygon bufferCreated=(Polygon) q.getSingleResult();
-			buffersCreatedList.add(bufferCreated);
+			polygonEntity= (Polygon) q.getSingleResult();
 			
-		}
-		return buffersCreatedList;
+			return polygonEntity;
 	}
 }

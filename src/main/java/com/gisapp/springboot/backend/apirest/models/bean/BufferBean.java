@@ -1,12 +1,10 @@
 package com.gisapp.springboot.backend.apirest.models.bean;
 
-import com.vividsolutions.jts.geom.Coordinate;
-
 public class BufferBean {
 
 	private Long id;
 	
-	private Coordinate[] coordinates;
+	private String coordinates;
 
 	public Long getId() {
 		return id;
@@ -16,11 +14,11 @@ public class BufferBean {
 		this.id = id;
 	}
 
-	public Coordinate[] getCoordinates() {
+	public String getCoordinates() {
 		return coordinates;
 	}
 
-	public void setCoordinates(Coordinate[] coordinates) {
+	public void setCoordinates(String coordinates) {
 		this.coordinates = coordinates;
 	}
 	

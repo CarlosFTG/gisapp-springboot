@@ -12,6 +12,7 @@ import com.gisapp.springboot.backend.apirest.dao.IPolygonDAO;
 import com.gisapp.springboot.backend.apirest.dao.IPolygonsGenericDAO;
 import com.gisapp.springboot.backend.apirest.models.bean.BufferBean;
 import com.gisapp.springboot.backend.apirest.models.entity.NonGeometryEntity;
+import com.gisapp.springboot.backend.apirest.models.entity.PolygonEntity;
 import com.gisapp.springboot.backend.apirest.services.IPolygonService;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
@@ -27,22 +28,27 @@ public class PolygonService implements IPolygonService {
 	@Override
 	public List<BufferBean> createBuffer(List<NonGeometryEntity> pointList) throws JSONException, ParseException {
 				
-		List<Polygon> buffersCreatedList= new ArrayList<Polygon>();
 		
+		Polygon bufferCreated;
+		
+		List<PolygonEntity> polygonEntityList= new ArrayList<PolygonEntity>();
 		
 		List<BufferBean> bufferBeanList = new ArrayList<BufferBean>();
 		
-		buffersCreatedList=polygonDAO.createBuffer(pointList);
-				
-		bufferBeanList=PolygonsConverter.convertFromBufferListToBufferBeanList(buffersCreatedList);
 		
-		for(Polygon bufferCreated:buffersCreatedList) {
+		
+		for(NonGeometryEntity point:pointList) {
+			bufferCreated=polygonDAO.createBuffer(point);
 			
-			polygonGenericDAO.save(PolygonsConverter.convertFromBufferBeanToBufferEntity(bufferCreated));
+			PolygonEntity polygonEntity= new PolygonEntity();
+			
+			polygonEntity.setBuffer(true);
+			polygonEntity.setGeom(bufferCreated);
+			polygonEntity.setUserId(Long.parseLong(point.getUserId()));
+			polygonEntityList.add(this.polygonGenericDAO.save(polygonEntity));
+			
 		}
-		
+		bufferBeanList=PolygonsConverter.convertFromBufferListToBufferBeanList(polygonEntityList);
 		return bufferBeanList;
-	}
 	
-	
-}
+}}

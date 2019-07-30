@@ -89,7 +89,7 @@ public class AppRestController {
 		return geomToSave;
 	}
 	
-	@PostMapping("/geometries/findPointByUserId")
+	@PostMapping("/geometries/findFeaturesByUserId")
 	@ResponseStatus(HttpStatus.FOUND)
 	public ResponseEntity<UserBean> findPointByUserId(@RequestBody String userId) throws ParseException, JSONException {
 		
