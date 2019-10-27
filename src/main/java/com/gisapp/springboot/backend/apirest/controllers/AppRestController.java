@@ -103,7 +103,7 @@ public class AppRestController {
 	
 	@PostMapping("/geometries/findPointsIntoAPolygon")
 	@ResponseStatus(HttpStatus.FOUND)
-	public ResponseEntity<List<PointsEntity>> findPointsIntoAPolygon(@RequestBody String polygon) throws ParseException, JSONException, IOException {
+	public ResponseEntity<List<Map<String, String>>> findPointsIntoAPolygon(@RequestBody String polygon) throws ParseException, JSONException, IOException {
 		
 		return ResponseEntity.ok(this.pointService.findPointsIntoAPolygon(polygon));
 	}

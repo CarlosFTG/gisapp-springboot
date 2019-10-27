@@ -3,6 +3,7 @@ package com.gisapp.springboot.backend.apirest.services.impl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.JSONException;
@@ -10,12 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gisapp.springboot.backend.apirest.converter.PointsConverter;
 import com.gisapp.springboot.backend.apirest.converter.UserConverter;
 import com.gisapp.springboot.backend.apirest.dao.ILinesGenericDAO;
 import com.gisapp.springboot.backend.apirest.dao.IPointsDAO;
 import com.gisapp.springboot.backend.apirest.dao.IPointsGenericDao;
 import com.gisapp.springboot.backend.apirest.dao.IPolygonDAO;
 import com.gisapp.springboot.backend.apirest.dao.IPolygonsGenericDAO;
+import com.gisapp.springboot.backend.apirest.models.bean.PointBean;
 import com.gisapp.springboot.backend.apirest.models.bean.UserBean;
 import com.gisapp.springboot.backend.apirest.models.entity.LineEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.PointsEntity;
@@ -92,7 +95,7 @@ public class PointServiceImpl implements IPointService {
 	}
 
 	@Override
-	public List<PointsEntity> findPointsIntoAPolygon(String polygon_id) throws ParseException, IOException, JSONException {
+	public List<Map<String, String>> findPointsIntoAPolygon(String polygon_id) throws ParseException, IOException, JSONException {
 
 
 		
@@ -102,8 +105,9 @@ public class PointServiceImpl implements IPointService {
 		 
 		List<PointsEntity> pointsIntoPolygonList = pointsDao.findPointsIntoAPolygon(polygonEntity);
 		
+		List<Map<String, String>> pointsBeanList=PointsConverter.convertToGeometryBeanList(pointsIntoPolygonList);
 		
-		return pointsIntoPolygonList;
+		return pointsBeanList;
 	}
 	
 	

@@ -22,7 +22,7 @@ public interface IPointService {
 
 	public UserBean findFeaturesByUserId(String userId) throws ParseException, JSONException;
 
-	public List<PointsEntity> findPointsIntoAPolygon(String polygon) throws ParseException, IOException, JSONException;
+	public List<Map<String, String>> findPointsIntoAPolygon(String polygon) throws ParseException, IOException, JSONException;
 
 	void removePoint(List<PointsEntity> pointsList);
 
