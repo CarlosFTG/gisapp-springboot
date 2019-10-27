@@ -49,25 +49,9 @@ public class PointsDAO implements IPointsDAO {
 	@Override
 	public List<PointsEntity> findPointsIntoAPolygon(PolygonEntity polygon) {
 
-		// StringBuffer sb = new StringBuffer();
-		// sb.append("select p from PointsEntity p, PolygonEntity t "
-		// + "where within(p.coordinates, t.coordinates) = true");
-		//
-		// Query q = em.createQuery(sb.toString());
-		//
-		// List<PointsEntity> pointsFound = new ArrayList<PointsEntity>();
-		//
-		// try {
-		// pointsFound = q.getResultList();
-		// }catch(NoResultException nre){
-		// }
-		//
-		// return pointsFound;
-
 		StringBuffer sb = new StringBuffer();
-		sb.append("select p from PointsEntity p "
-				+ "where p.userId in (:userId) " 
-		+ "and within(p.coordinates, :polygon) = true");
+		sb.append("select p from PointsEntity p " + "where p.userId in (:userId) "
+				+ "and within(p.coordinates, :polygon) = true");
 
 		Query q = em.createQuery(sb.toString());
 		q.setParameter("polygon", polygon.getGeom());
