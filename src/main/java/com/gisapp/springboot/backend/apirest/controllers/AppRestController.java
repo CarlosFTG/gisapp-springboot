@@ -35,6 +35,7 @@ import com.gisapp.springboot.backend.apirest.models.entity.LineEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.LoginEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.NonGeometryEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.UserEntity;
+import com.gisapp.springboot.backend.apirest.services.ILineService;
 import com.gisapp.springboot.backend.apirest.services.IPointService;
 import com.gisapp.springboot.backend.apirest.services.IPolygonService;
 import com.gisapp.springboot.backend.apirest.services.IUserService;
@@ -55,12 +56,16 @@ public class AppRestController {
 	@Autowired
 	private IPolygonService polygonService;
 	
+	@Autowired
+	private ILineService lineService;
+	
 	ObjectMapper mapper = new ObjectMapper();
 
 	@GetMapping("/clientes")
 	public List<PointsEntity> index() {
 		return pointService.findAll();
 	}
+	
 
 	@PostMapping("/geometries/insertPoint")
 	@ResponseStatus(HttpStatus.CREATED)
@@ -76,7 +81,7 @@ public class AppRestController {
 	public PolygonEntity insertPolygon(@RequestBody NonGeometryEntity polygonBean) throws ParseException {
 
 		PolygonEntity geomToSave = new PolygonEntity();
-		this.pointService.savePolygons(PolygonsConverter.convertToGeometryEntity(polygonBean));
+		this.polygonService.savePolygons(PolygonsConverter.convertToGeometryEntity(polygonBean));
 		return geomToSave;
 	}
 	
@@ -85,37 +90,24 @@ public class AppRestController {
 	public LineEntity insertLine(@RequestBody NonGeometryEntity lineBean) throws ParseException {
 
 		LineEntity geomToSave = new LineEntity();
-		this.pointService.saveLine(LinesConverter.convertToGeometryEntity(lineBean));
+		this.lineService.saveLine(LinesConverter.convertToGeometryEntity(lineBean));
 		return geomToSave;
 	}
 	
 	@PostMapping("/geometries/findFeaturesByUserId")
 	@ResponseStatus(HttpStatus.FOUND)
-	public ResponseEntity<UserBean> findPointByUserId(@RequestBody String userId) throws ParseException, JSONException {
+	public ResponseEntity<UserBean> findFeaturesByUserId(@RequestBody String userId) throws ParseException, JSONException {
 		
 		return ResponseEntity.ok(this.pointService.findFeaturesByUserId(userId));
 	}
 	
 	@PostMapping("/geometries/findPointsIntoAPolygon")
 	@ResponseStatus(HttpStatus.FOUND)
-	public ResponseEntity<List<Map<String, String>>> findPointsIntoAPolygon(@RequestBody String polygon) throws ParseException, JSONException, IOException {
+	public ResponseEntity<List<PointsEntity>> findPointsIntoAPolygon(@RequestBody String polygon) throws ParseException, JSONException, IOException {
 		
 		return ResponseEntity.ok(this.pointService.findPointsIntoAPolygon(polygon));
 	}
 
-	@PutMapping("/clientes/{id}")
-	@ResponseStatus(HttpStatus.CREATED)
-	public PointsEntity update(@RequestBody PointsEntity cliente, @PathVariable Long id) {
-
-		return null;
-	}
-
-//	@DeleteMapping("/clientes/{id}")
-//	@ResponseStatus(HttpStatus.NO_CONTENT)
-//	public void delete(@PathVariable Long id) {
-//		// GeometryEntity currentCliente = this.clienteService.findById(id);
-//		// this.clienteService.delete(currentCliente);
-//	}
 
 	@PostMapping("/users/login")
 	@ResponseStatus(HttpStatus.FOUND)
@@ -131,10 +123,9 @@ public class AppRestController {
 
 	@PostMapping("/users/createUser")
 	@ResponseStatus(HttpStatus.CREATED)
-	public PointsEntity createUser(@RequestBody UserEntity user) throws ParseException {
+	public void createUser(@RequestBody UserEntity user) throws ParseException {
 
 		this.userService.save(user);
-		return null;
 	}
 	
 	@PostMapping("/geometries/removePoints")

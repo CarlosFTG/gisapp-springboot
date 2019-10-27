@@ -10,13 +10,13 @@ import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 
-import com.gisapp.springboot.backend.apirest.dao.IGeometriesDAO;
+import com.gisapp.springboot.backend.apirest.dao.IPointsDAO;
 import com.gisapp.springboot.backend.apirest.models.entity.PointsEntity;
-import com.gisapp.springboot.backend.apirest.models.entity.TempPolygonEntity;
+import com.gisapp.springboot.backend.apirest.models.entity.PolygonEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.UserEntity;
 
 @Repository
-public class PointsDAO implements IGeometriesDAO {
+public class PointsDAO implements IPointsDAO {
 	
 	@PersistenceContext
     private EntityManager em;
@@ -42,42 +42,13 @@ public class PointsDAO implements IGeometriesDAO {
 		return userFound;
 		
 	}
-	
-	@Override
-	public List<PointsEntity> findPointsByUserIdAndCoords(List<PointsEntity> pointsList) {
-		
-		StringBuffer sb = new StringBuffer();
-		
-		PointsEntity pointFound = new PointsEntity();
-		
-		List<PointsEntity> pointsFoundList = new ArrayList<PointsEntity>();
-		
-		for(PointsEntity point : pointsList) {
-			
-			sb.append("select p from PointsEntity p "
-					+ "where user_id in (:userId) "
-					+ "and coordinates in (:coordinates)");
-					
-					Query q = em.createQuery(sb.toString());
-					
-					q.setParameter("userId",point.getUserId());
-					
-					q.setParameter("coordinates",point.getGeom());
-					
-					pointFound= (PointsEntity) q.getSingleResult();
-					
-					pointsFoundList.add(pointFound);
-			}
-		
-		return pointsFoundList;
-	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<PointsEntity> findPointsIntoAPolygon(TempPolygonEntity polygon) {
+	public List<PointsEntity> findPointsIntoAPolygon(PolygonEntity polygon) {
 		
 		StringBuffer sb = new StringBuffer();
-		sb.append("select p from PointsEntity p, TempPolygonEntity t "
+		sb.append("select p from PointsEntity p, PolygonEntity t "
 		+ "where within(p.coordinates, t.coordinates) = true");
 		
 		Query q = em.createQuery(sb.toString());

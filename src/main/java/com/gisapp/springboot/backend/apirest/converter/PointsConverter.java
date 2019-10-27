@@ -131,26 +131,6 @@ public class PointsConverter {
 		return geometryBean;
 
 	}
-	
-	public static List<JSONObject> convertoListGeometriesEntitiesListToGeometriesBeansList(List<PointsEntity> geometryEntityList) throws ParseException, JSONException{
-		
-		List<JSONObject> geometryBeanList = new ArrayList<>();
-				
-		
-		for(PointsEntity geometryEntity:geometryEntityList) {
-			
-			JSONObject geoJson = new JSONObject();
-			
-			geoJson.put("type", "MultiPoint");
-			geoJson.put("coordinates", geometryEntity.getGeom());
-			
-			geometryBeanList.add(geoJson);
-		}
-		
-		
-		return geometryBeanList;
-		
-	}
 
 	/**
 	 * Method to extract the type of feature, lat and long

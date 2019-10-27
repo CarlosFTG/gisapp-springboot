@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -39,6 +40,9 @@ public class UserService implements IUserService {
 	@Override
 	public UserBean login(LoginEntity userLogin) throws ParseException, JSONException {
 
+		final Logger logger = Logger.getLogger(PointServiceImpl.class);
+
+		
 		UserEntity user = new UserEntity();
 
 		UserBean loginUser = new UserBean();
@@ -51,7 +55,6 @@ public class UserService implements IUserService {
 		if (passwordEncoder.matches(userLogin.getPassword(), userFound.getUserPassword())) {
 
 			UserBean userToConvert = UserConverter.convertToUserBean(userFound);
-
 			loginUser.setUserName(userFound.getUserName());
 			loginUser.setEmail(userFound.getEmail());
 			loginUser.setToken(getJWTToken(userFound.getEmail()));

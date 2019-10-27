@@ -6,11 +6,13 @@ import java.util.List;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.gisapp.springboot.backend.apirest.converter.PolygonsConverter;
 import com.gisapp.springboot.backend.apirest.dao.IPolygonDAO;
 import com.gisapp.springboot.backend.apirest.dao.IPolygonsGenericDAO;
 import com.gisapp.springboot.backend.apirest.models.bean.BufferBean;
+import com.gisapp.springboot.backend.apirest.models.entity.LineEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.NonGeometryEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.PolygonEntity;
 import com.gisapp.springboot.backend.apirest.services.IPolygonService;
@@ -24,6 +26,15 @@ public class PolygonService implements IPolygonService {
 	
 	@Autowired
 	private IPolygonsGenericDAO polygonGenericDAO;
+	
+	@Override
+	@Transactional
+	public void savePolygons(PolygonEntity polygon) {
+
+		polygonGenericDAO.save(polygon);
+	}
+	
+	
 	
 	@Override
 	public List<BufferBean> createBuffer(List<NonGeometryEntity> pointList) throws JSONException, ParseException {

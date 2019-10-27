@@ -12,7 +12,6 @@ import com.gisapp.springboot.backend.apirest.models.bean.BufferBean;
 import com.gisapp.springboot.backend.apirest.models.bean.PolygonBean;
 import com.gisapp.springboot.backend.apirest.models.entity.NonGeometryEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.PolygonEntity;
-import com.gisapp.springboot.backend.apirest.models.entity.TempPolygonEntity;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
@@ -42,21 +41,6 @@ public class PolygonsConverter {
 
 	}
 	
-	/**
-	 * The bean created in the operation done in the DAO is transformed to PoygonEntity
-	 * in order to be saved in the db as a regular polygon
-	 * @param buffer
-	 * @param bufferIn
-	 * @return
-	 */
-	public static PolygonEntity convertFromBufferBeanToBufferEntity(Polygon buffer) {
-		PolygonEntity polygonEntity = new PolygonEntity();
-		
-		polygonEntity.setGeom(buffer);
-		polygonEntity.setBuffer(true);
-		return polygonEntity;
-	}
-	
 	public static BufferBean convertFromBufferToBufferBean(PolygonEntity polygon) {
 
 		BufferBean bufferBean = new BufferBean();
@@ -65,39 +49,6 @@ public class PolygonsConverter {
 		bufferBean.setId(polygon.getId());
 
 		return bufferBean;
-
-	}
-	
-	public static List<PolygonEntity> convertToPolygonsEntityList(List<NonGeometryEntity> nonGeometryList)
-			throws ParseException {
-
-		List<PolygonEntity> geometryEntityList = new ArrayList<>();
-
-		PolygonEntity geometryEntity = new PolygonEntity();
-
-		for (NonGeometryEntity nonGeometry : nonGeometryList) {
-
-			geometryEntity = convertToPolygonEntity(nonGeometry);
-			geometryEntityList.add(geometryEntity);
-		}
-
-		return geometryEntityList;
-	}
-	
-	public static PolygonEntity convertToPolygonEntity(NonGeometryEntity nonGeometry) throws ParseException {
-
-		PolygonEntity geometryEntity = new PolygonEntity();
-
-		geometryEntity.setUserId(Long.parseLong(nonGeometry.getUserId()));
-
-		geometryEntity.setPolygonName(nonGeometry.getPointName());
-		geometryEntity.setGeom(wktToGeometry(nonGeometry.getGeom()));
-
-		geometryEntity.setUserEmail(nonGeometry.getUserEmail());
-
-		geometryEntity.getGeom().setSRID(3857);
-
-		return geometryEntity;
 
 	}
 	
@@ -160,25 +111,17 @@ public class PolygonsConverter {
 		geoJson.put("geometry", geoJsonGeom);
 
 		geoJsonProperties.put("name", geometryEntity.getPolygonName());
+		geoJsonProperties.put("polygonId", geometryEntity.getId());
 
 		geoJson.put("properties", geoJsonProperties);
-		polygonBean.setUserId(geometryEntity.getId());
+		polygonBean.setUserId(geometryEntity.getUserId());
+		polygonBean.setId(geometryEntity.getId());
 		polygonBean.setPolygonName(geometryEntity.getPolygonName());
 		polygonBean.setGeom(geoJson);
 		polygonBean.setBuffer(geometryEntity.isBuffer());
 
 		return polygonBean;
 
-	}
-	public static TempPolygonEntity convertFromStringToPolygonEntity(String polygon) throws ParseException {
-		
-		TempPolygonEntity polygonEntity = new TempPolygonEntity();
-		
-		polygonEntity.setCoordinates(wktToGeometry(polygon));
-		
-		polygonEntity.getCoordinates().setSRID(3857);
-		
-		return polygonEntity;	
 	}
 	
 	public static PolygonEntity convertToGeometryEntity(NonGeometryEntity nonGeometry) throws ParseException {

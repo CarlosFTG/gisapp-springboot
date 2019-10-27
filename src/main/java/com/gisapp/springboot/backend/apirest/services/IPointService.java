@@ -20,15 +20,9 @@ public interface IPointService {
 
 	public void savePoint(PointsEntity geometry);
 
-	public void delete(PointsEntity cliente);
-	
 	public UserBean findFeaturesByUserId(String userId) throws ParseException, JSONException;
-	
-	public List<Map<String, String>> findPointsIntoAPolygon(String polygon) throws ParseException, IOException, JSONException;
 
-	void savePolygons(PolygonEntity polygon);
-
-	void saveLine(LineEntity line);
+	public List<PointsEntity> findPointsIntoAPolygon(String polygon) throws ParseException, IOException, JSONException;
 
 	void removePoint(List<PointsEntity> pointsList);
 

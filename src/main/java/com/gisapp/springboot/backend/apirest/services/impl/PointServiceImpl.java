@@ -3,53 +3,55 @@ package com.gisapp.springboot.backend.apirest.services.impl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.gisapp.springboot.backend.apirest.converter.PointsConverter;
-import com.gisapp.springboot.backend.apirest.converter.PolygonsConverter;
 import com.gisapp.springboot.backend.apirest.converter.UserConverter;
-import com.gisapp.springboot.backend.apirest.dao.IGeometriesDAO;
 import com.gisapp.springboot.backend.apirest.dao.ILinesGenericDAO;
+import com.gisapp.springboot.backend.apirest.dao.IPointsDAO;
 import com.gisapp.springboot.backend.apirest.dao.IPointsGenericDao;
+import com.gisapp.springboot.backend.apirest.dao.IPolygonDAO;
 import com.gisapp.springboot.backend.apirest.dao.IPolygonsGenericDAO;
-import com.gisapp.springboot.backend.apirest.dao.ITempPolygonGenericDAO;
-import com.gisapp.springboot.backend.apirest.dao.impl.PointsDAO;
 import com.gisapp.springboot.backend.apirest.models.bean.UserBean;
 import com.gisapp.springboot.backend.apirest.models.entity.LineEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.PointsEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.PolygonEntity;
-import com.gisapp.springboot.backend.apirest.models.entity.TempPolygonEntity;
 import com.gisapp.springboot.backend.apirest.models.entity.UserEntity;
 import com.gisapp.springboot.backend.apirest.services.IPointService;
 import com.vividsolutions.jts.io.ParseException;
 
 @Service
 public class PointServiceImpl implements IPointService {
+	
+	final static Logger logger = Logger.getLogger(PointServiceImpl.class);
 
 	@Autowired
 	private IPointsGenericDao pointsGenericDao;
 	
 	@Autowired
+	private IPointsDAO pointsDao;
+	
+	@Autowired
 	private IPolygonsGenericDAO polygonsGenericDao;
 	
 	@Autowired
-	private ITempPolygonGenericDAO tempPolygonsGenericDao;
+	private IPolygonDAO polygonDAO;
+	
+	
 	
 	@Autowired
-	private ILinesGenericDAO linesGenericDao;
-	
-	@Autowired
-	private IGeometriesDAO geometriesDao;
+	private IPointsDAO geometriesDao;
 
 	@Override
 	@Transactional(readOnly = true)
 	public List<PointsEntity> findAll() {
+		
 		return (List<PointsEntity>) pointsGenericDao.findAll();
+		
 	}
 
 	@Override
@@ -63,7 +65,6 @@ public class PointServiceImpl implements IPointService {
 	@Transactional
 	public void removePoint(List<PointsEntity> pointsList) {
 		
-		List<PointsEntity> pointsFoundList=new ArrayList<>();
 		
 		//as having problems to get the attributes on the front end, the
 		//points to remove are found by user id and coords
@@ -76,26 +77,9 @@ public class PointServiceImpl implements IPointService {
 		
 	}
 	
-	@Override
-	@Transactional
-	public void savePolygons(PolygonEntity polygon) {
-
-		polygonsGenericDao.save(polygon);
-	}
 	
-	@Override
-	@Transactional
-	public void saveLine(LineEntity line) {
 
-		linesGenericDao.save(line);
-	}
-
-	@Override
-	@Transactional
-	public void delete(PointsEntity cliente) {
-		pointsGenericDao.delete(cliente);
-
-	}
+	
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -108,19 +92,18 @@ public class PointServiceImpl implements IPointService {
 	}
 
 	@Override
-	public List<Map<String, String>> findPointsIntoAPolygon(String polygon) throws ParseException, IOException, JSONException {
+	public List<PointsEntity> findPointsIntoAPolygon(String polygon_id) throws ParseException, IOException, JSONException {
 
-		@SuppressWarnings("unused")
-		TempPolygonEntity polygonEntity = PolygonsConverter.convertFromStringToPolygonEntity(polygon);
+
 		
-		tempPolygonsGenericDao.save(polygonEntity);
-				
-		List<Map<String, String>> pointsIntoPolygon=PointsConverter.convertToGeometryBeanList( geometriesDao.findPointsIntoAPolygon(polygonEntity));
+		Long polygonId=Long.parseLong(polygon_id);
 		
-		tempPolygonsGenericDao.delete(polygonEntity);
+		PolygonEntity polygonEntity =polygonDAO.findPolygonById(polygonId);
+		 
+		List<PointsEntity> pointsIntoPolygonList = pointsDao.findPointsIntoAPolygon(polygonEntity);
 		
 		
-		return pointsIntoPolygon;
+		return pointsIntoPolygonList;
 	}
 	
 	
